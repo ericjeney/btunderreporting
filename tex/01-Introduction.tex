@@ -1,5 +1,4 @@
 \section{Introduction}
 
-One paragraph.
-
-Two paragraphs.
+% Taken from what Zach sent. We'll need to expand it a bit to match Neil's expected format.
+In a BitTorrent network, a user has incentive to send selective HAVE messages to other peers. While normally a HAVE message for a piece of a file is sent to all peers when the user acquires that piece, a strategic under-reporter (as we are calling him/her) will only send out HAVE messages for the more common pieces it has, and not report its rarer pieces. By doing so, peers of the strategic under-reporter will maintain interest in the strategic under-reporter, because it can keep revealing pieces it has (that few others have) one-by-one. The peers will be less interested in trading with each other, since they received the same pieces of the file from the strategic under-reporter. Levin et al. showed that such a strategy improves the download speed of the under-reporter by prolonging interest, but that the average download time of all peers in the network increased by about 12\% when all peers adopted this strategy$^{[1]}$.

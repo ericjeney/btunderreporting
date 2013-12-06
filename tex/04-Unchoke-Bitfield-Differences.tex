@@ -1,3 +1,23 @@
 \subsection{Unchoke by Bitfield Differences}
 
-Another proposed solution deals with unchoking based on bitfield differences.
+Unchoke top-$k$ peers based on metric accounting for previous contributions and bitfield size.
+
+A \textbf{bitfield} contains information about which pieces a peer has. The client should maintain updated bitfields for all peers that it has handshaked with. Assuming peers are indexed by $i$, we denote their bitfield as $B_i(l)$, where $l$ indexes each piece of the file. $B_i(l)$ is 0 if the peer does not have the piece (or has not reported it) and 1 if it does have it. Then we can say that the magnitude of $B_i$ is:
+
+$$ \abs{B_i} = \sum_j B_i(j) $$
+
+Thus, it is the number of 1's in the bitfield. A relevant number is $\abs{B_b - B_a}$ which is the number of pieces peer b has that a does not have.
+
+Also, we denote their \textbf{contribution} as $C_i$ which refers to how many bytes of the file were sent from that peer to our client in the past. Then their relative or percent contribution is given by:
+
+$$ \frac{C_i}{\sum_{j}C_j} $$
+
+In the vanilla system, a client will unchoke the $k$ peers with the highest $C_i$. In doing so, the client chooses to upload to them.
+
+In the new disincentivizing system, a client will unchoke the $k$ peers with the highest \\ $\boxed{\frac{C_i}{\sum_{j}C_j}\abs{B_i - B_0} + Opt}$ where $B_0$ is the client's own bitfield, $-$ is set difference, and $Opt$ is some optimistic unchoking parameter. In this system, a client will naturally trade with peers that have revealed a lot of their pieces, and have uploaded a lot of their pieces. At a high level, this heurestic preferences those who are generous and honest.
+
+This will disincentivize under-reporting, because the strategic under-reporter will want to maximize his $\abs{B_i}$ in order to receive bandwidth from the client. The only way he/she can increase his/her chances of getting pieces of the file from the client are by uploading more to the client or by revealing more pieces to the client. Either of these choices is preferable to the client. The first does not explicitly give incentive not to under-report, but it does give incentive to upload more pieces to the client (as in a PropShare world), which is good of course. The second choice clearly gives incentive to report more, which will reduce under-reporting, even if it does not get rid of it completely.
+
+\textbf{Downsides:} The strategic under-reporter can try to determine who is adopting this new strategy and choose not to trade with them. Thus, this system would need to be adopted by as many clients in the network as possible.
+
+Moreover, this system may not be very ``fair,'' since those who are close to finishing the download will receive more of the client's bandwidth, even though other peers probably need it more. It may be that an extra optimistic unchoking-type parameter or procedure is necessary to bias the unchoking more towards newer peers.
