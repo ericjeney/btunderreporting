@@ -1,3 +1,17 @@
 \subsection{Buffer Uninteresting Peers}
 
-Another proposed solution deals with buffering uninteresting peers.
+Place uninteresting peers in a \textbf{timeout}, collecting their new HAVE messages in a buffer to be examined at the end of the timeout.
+
+As users receive new pieces, they send HAVE messages out to their peers who in turn send back an \textit{interested} message if they do not have the piece. As long as a user is missing at least one piece from a peer, that peer is considered \textbf{interesting}.
+
+Under-reporters take advantage of this by minimizing the amount of pieces they report to their peers at a time. When a peer becomes uninterested in them, they send out another HAVE message, so the peer becomes interested in them again.
+
+When a peer sends back an \textit{interested} message to the under-reporter, the under-reporter stops sending HAVE messages. Thus, if the peer were to wait before sending back the \textit{interested} message, they would receive more HAVE messages from under-reporters.
+
+This will disincentivize under-reporting because it will slow down the under-reporter due to constantly being put in a timeout. In addition, his peers will receive more HAVE messages, making the under-reporting strategy grow closer to normal reporting.
+
+\textbf{Downsides:} If the timeout is too short, under-reporters would hardly be effected, so the problem would not be solved. Conversely, if it is too long, all users will be slowed down from the wait.
+
+If the buffer is too small, HAVE messages could go unreceived, resulting in lost trades. The buffer being too large would have memory issues for a large number of peers, but each user only has a small number of peers, so this should not be a problem.
+
+The main time that there would be a problem for normal reporters is when they have almost all the pieces, and many other people become uninteresting.
