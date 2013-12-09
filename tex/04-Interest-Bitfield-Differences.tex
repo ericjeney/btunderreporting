@@ -1,9 +1,9 @@
 \subsection{Bitfield Differences}
 
-Similarly, another potential solution would be to determine our interest in peers based on the magnitude of the difference in our bitfields. That is, $\abs{B_i - B_0}$. By using this method, we will prioritize peers that have \emph{significantly} different pieces than we do over those that only have a handful of pieces that we don't.
+Similarly, another potential solution would be to determine the amount of data we upload to peer based on the magnitude of the difference in our bitfields. That is, $\abs{B_i - B_0}$. By using this method, we will prioritize peers that have \emph{significantly} different pieces than we do over those that only have a handful of pieces that we don't.
 
 Many current BitTorrent clients, such as Azureus, prioritize peers based on how much these peers have uploaded to them. This does little to prevent a peer from strategically revealing the packets that it has. Instead, we propose a two-pass system, where peers are first selected based on the difference between their bitfield and ours, and them trimmed further based on their upload rate.
 
-Suppose that we want to trim a list of $n$ peers down to $m$, where $2m \leq n$. Using this system, we would first select the top $2m$ peers from all $n$ based on the magnitude of our bitfield differences. Then, we would select the top $m$ peers from that $2m$ based on the amount of data that they have uploaded to us.
+Suppose that we want to trim a list of $n$ peers down to $m$, where $2m \leq n$. Using this system, we would first select the top $2m$ peers from all $n$ based on the magnitude of our bitfield differences. Then, we would select the top $m$ peers from that $2m$ based on the amount of data that they have uploaded to us. We could then run the standard auction model over this list or the modified proportional share model.
 
 This system incentivizes peers both to upload data to us \emph{and} to be honest about the pieces that they have. The system will not select a peer that doesn't upload enough data. Similarly, it is unlikely to select a peer that exhibits typical underreporting behavior because those peers would have relatively small bitfield differences.
