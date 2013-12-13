@@ -1,3 +1,13 @@
 \section{Related Work}
 
-Here's where we should write about our related work.
+%Here's where we should write about our related work.
+
+In a 2008 study by Levin et al. (citation1), it was shown that BitTorrent acts on an \textit{auction-based model} as opposed to the previously applied \textit{tit-for-tat model}. Instead of sending data to all peers from which the sender received data, BitTorrent chooses the \textit{top-k} peers and gives them each the same amount of data. This allows clients to game the system in various ways. One such client, BitTyrant (citation2), attempts to give as little data as possible while still being in the top-k peers in order to have as great a return as possible. In addition, clients can utilize Sybil attacks in which they act as multiple clients in order to have as great a chance of receiving data as possible (citation3). With more receivers, it's possible for the Sybil attacker to monopolize the data sent from a peer.
+
+In order to combat this, a proportional share client was proposed (citation1). Peers who sent more data would receive proportionally more data in return, returning to the desired tit-for-tat model. This would counter the BitTyrant and Sybil attacks, as neither would give any advantage over an honest peer. However, a new strategy was mentioned in the same study which proves problematic: \textit{under-reporting} (citation1).
+
+In under-reporting, a peer tries to be as interesting to its peers as possible in order to trade as much and as often as possible. In order to do this, the under-reporter chooses which pieces to display to its peers based on how common the piece is among other peers. As the peer becomes uninterested in the under-reporter, the under-reporter reveals another piece in order to make the peer interested once more. However, as more peers under-report, the overall download time for users increases, as fewer pieces are revealed and traded (citation1).
+
+%Citation1 is Dave's study we read about in class. Citation2 is his citation 22: M. Piatek, T. Isdal, T. Anderson, A. Krishnamurthy, and A. Venkataramani. Do incentives build robustness in BitTorrent? In NSDI, 2007. Citation3 is his citation 6: J. Douceur. The Sybil Attack. In IPTPS, 2002.
+
+%Another possible source to check and cite is http://ieeexplore.ieee.org/xpls/icp.jsp?arnumber=5284542#sec3. Check section 3.2 for information on Premature Starvation caused by under-reporting. This information could be added to the current third paragraph, which talks about problems related to under-reporting. Alternatively, it could be expanded to its own paragraph.
