@@ -2,28 +2,16 @@
 
 % Perhaps this section should really be in equations, Q have (A) <---> A uninterested (Q).
 
-Let Q be a peer of swarm S who is employing the underreporting strategy presented by Dave \cite {dlbittorrent}. Let A and B be some other peers of swarm S who are honest (they are not employing the underreporting strategy). Q will send a HAVE message to A if and only if A sends Q an UNINTERESTED message. If A sends an UNINTERESTED message to B, it will take some number of rounds, R, before B regains A's interest. If A sends an UNINTERESTED message to Q, it will take 0 rounds before Q regains A's interest.
+Assume the number of rounds, $R$, that it takes for honest peers to become interested in one another again is some constant. Assume there exists a peer $P$ in swarm $S$, and that this peer only re-evaluates interest every $R$ rounds. The honest peers in swarm $S$ will be unaffected, because they would not have been evaluated as interesting prior to round $R$ anyway. The underreporting peers in swarm $S$ will be ``punished'', because they held interest for a shorter period of time than they could've (by virtue of the fact they they chose to hide a piece) and must wait the same number of rounds as the honest peers.
 
-Assume the number of rounds, R, that it takes for honest peers to become interested in one another again is some constant. Assume there exists a peer P in swarm S, and that this peer only re-evaluates interest every R rounds. The honest peers in swarm S will be unaffected, because they would not have been evaluated as interesting prior to round R anyway. The underreporting peers in swarm S will be punished, because they held interest for a shorter period of time than they could've (by virtue of the fact they they chose to hide a piece) and must wait the same number of rounds as the honest peers.
+This strategy has two primary advantages. The first is that it doesn't require any modification of the algorithms which determine whether or not a peer is interesting. In other words, multiple clients can implement this algorithm and still choose how they wish to determine interest. This is critical because the algorithms which determine whether or not another peer is interesting are implementation specific. We consider it ideal to rely entirely on the protocol and abstract underreporting strategy. The second advantage is that it punishes underreporters implicitly while (in an ideal implementation) leaving the rest of the system unaffected. If this solution were implemented sufficiently well, a swarm full of honest peers would remain completely unaffected by the algorithm.
 
-Consider the following algorithms based on these ideas:\newline
+\subsection {Disadvantages}
 
-\textbf {Uninterested Procedure.} Run when this peer sends an uninterested message to peer \textit{i}. R is the number of rounds that this peer will wait before re-evaluating \textit{i}.
+If the timeout for the buffering algorithm is too short, under-reporters would hardly be affected, so the problem would not be solved. Conversely, if it is too long, all users will be slowed down from the wait.
 
-\begin {enumerate}
-    \item Send uninterested message to \textit{i}.
-    \item Assign \textit{i} to be re-evaluated after R rounds.
-\end {enumerate}
+If the buffer is too small, HAVE messages could go unreceived, resulting in lost trades. The buffer being too large would have memory issues for a large number of peers, but each user only has a small number of peers, so this should not be a problem.
 
-\textbf {Round Procedure.} Run whenever this peer completes a round.
+The main environment in which this strategy presents a problem for normal reporters is when they have almost all the pieces, and many other people become uninteresting.
 
-\begin {enumerate}
-    \item For each neighbor \textit{n}: decrease the number of rounds \textit{n} must wait by one.
-    \item If \textit{n}'s number of rounds is decreased to zero then re-evaluate interest.
-    \item If \textit{n} is being re-evaluated and is interesting then send an interested message to \textit{n}.
-    \item If \textit{n} is being re-evaluated and is not interesting then execute the uninterested procedure.
-\end {enumerate}
-
-This strategy has two primary advantages. The first is that it doesn't require any modification of the algorithms which determine whether or not a peer is interesting. in other words, multiple clients can implement this algorithm and still choose how they wish to determine interest. This is critical because the algorithms which determine whether or not another peer is interesting are implementation specific. We consider it ideal to rely entirely on the protocol and abstract underreporting strategy. The second advantage is that it punishes underreporters implicitly while (in an ideal implementation) leaving the rest of the system unaffected. If this solution were implemented sufficiently well, a swarm full of honest peers would remain completely unaffected by the algorithm.
-
-This strategy also has a primary disadvantage. In a practical implementation, it is likely that this algorithm would cause some peers that we should be interested in to have to wait before we gain interest again. This slows down the system, as it is possible that the peer we are effectively ignoring could have very high bandwidth. The process of determining how long to wait before re-evaluating interest is key.
+The strategy of round/queue based interest also has one primary practical disadvantage. In an implementation, it is likely that this algorithm would cause some peers that we should be interested in to have to wait before we gain interest again. This slows down the system, as it is possible that the peer we are effectively ignoring could have very high bandwidth. The process of determining how long to wait before re-evaluating interest is key.

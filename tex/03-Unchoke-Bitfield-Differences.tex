@@ -28,7 +28,7 @@ As already discussed, vanilla clients unchoke the $k$ peers with the highest $C_
 
 Suppose that we want to trim the full list of $n$ peers down to the final $k$, where $2k \leq n$. First, select the $2k$ peers with the highest $\abs{B_i - B_0}$. Then, select the top $k$ peers from that $2k$ based on the amount of data that they have uploaded to our client.
 
-\subsection{Drawbacks}
+\subsection{Disadvantages}
 While both of these systems are likely to discourage underreporting, the strategic under-reporter can try to determine who is adopting this new strategy and choose not to trade with them. Thus, this system would need to be adopted by as many clients in the network as possible.
 
 Moreover, this system may not be very ``fair,'' since those who are close to finishing the download will receive more of the client's bandwidth, even though other peers probably need it more. It may be that an extra optimistic unchoking-type parameter or procedure is necessary to bias the unchoking more towards newer peers.

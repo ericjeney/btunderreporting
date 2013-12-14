@@ -1,17 +1,23 @@
+Another possible solution to the underreporting problem is to generate interest based on \textit{have} messages. Peers send \textit{interested} messages to any peers which have pieces that they do not. Likewise, peers send \textit{uninterested} messages to any peers which do not have any pieces that they do not. Peers relay which pieces they receive through \textit{have} messages.
+
+We make three main assumptions about the behaviors of honest and dishonest peers within a BitTorrent system.
+
+Let $Q$ be a peer of swarm $S$ who is employing the underreporting strategy presented by Levin et. al (citation pls). Let $A$ and $B$ be some other peers of swarm $S$ who are honest (they are not employing the underreporting strategy). Let $R$ be an integer number of rounds. Assume the following:
+
+$$ \mathrm{Uninterested}(A, Q) \longleftrightarrow \mathrm{Have}(Q, A) $$
+$$ \mathrm{Uninterested}(A, B) \longrightarrow \mathrm{Wait_Interesting}(B, R) $$
+$$ \mathrm{Uninterested}(A, Q) \longrightarrow \mathrm{Wait_Interesting}(Q, 0) $$\newline
+
+$Q$ will send a \textit{have} message to $A$ if and only if $A$ sends $Q$ an \textit{uninterested} message. If $A$ sends and \textit{uninterested} message to $B$, it will take some number of rounds, $R$, before $B$ regains $A$'s interest. If $A$ sends an \textit{uninterested} message to $Q$, it will take zero rounds before $Q$ regains $A$'s interest.
+
+These assumptions are the foundations for interest-based disincentivizing. In an interest-based system, peers will use the assumptions above in order to create a system in which the best strategy is honest piece revelation.
+
 \subsection{Buffer Uninteresting Peers}
 
-Place uninteresting peers in a \textbf{timeout}, collecting their new HAVE messages in a buffer to be examined at the end of the timeout.
+Underreporters rely on \textit{interested} messages from honest peers in order to determine when they can stop sending selective \textit{have} messages. By virtue of this fact, we come up with the following strategy.
 
-As users receive new pieces, they send HAVE messages out to their peers who in turn send back an \textit{interested} message if they do not have the piece. As long as a user is missing at least one piece from a peer, that peer is considered \textbf{interesting}.
+Place uninteresting peers in a \textbf{timeout}, collecting their new \textit{have} messages in a buffer to be examined at the end of the timeout.
 
-Under-reporters take advantage of this by minimizing the amount of pieces they report to their peers at a time. When a peer becomes uninterested in them, they send out another HAVE message, so the peer becomes interested in them again.
+By buffering the \textit{have} messages we receive, we can effectively eliminate any information from getting to the underreporting peers. They must then assume that they have not successfully re-gained our interest, and continue to send out \textit{have} messages. If we wait for long enough, the underreporting peer will send us all the possible \textit{have} messages. This forces them into honesty.
 
-When a peer sends back an \textit{interested} message to the under-reporter, the under-reporter stops sending HAVE messages. Thus, if the peer were to wait before sending back the \textit{interested} message, they would receive more HAVE messages from under-reporters.
-
-This will disincentivize under-reporting because it will slow down the under-reporter due to constantly being put in a timeout. In addition, his peers will receive more HAVE messages, making the under-reporting strategy grow closer to normal reporting.
-
-\textbf{Downsides:} If the timeout is too short, under-reporters would hardly be effected, so the problem would not be solved. Conversely, if it is too long, all users will be slowed down from the wait.
-
-If the buffer is too small, HAVE messages could go unreceived, resulting in lost trades. The buffer being too large would have memory issues for a large number of peers, but each user only has a small number of peers, so this should not be a problem.
-
-The main time that there would be a problem for normal reporters is when they have almost all the pieces, and many other people become uninteresting.
+The optimal strategy for an underreporter in this case is to report honestly, because then they spend the minimal amount of time in \textbf{timeout}. It is important to note that this does not benefit the system unless a majority of peers employ the buffering strategy. The underreporter can still successfully underreport to all the other honest peers in the swarm.
